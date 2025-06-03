@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -78,6 +77,8 @@
       <button id="console-time-end">End Timer</button>
       <button id="console-trace">Console Trace</button>
       <button id="global-error">Trigger a Global Error</button>
+      <button id="try-catch-demo">Try/Catch Demo</button>
+      <button id="custom-error-demo">Custom Error Demo</button>
     </section>
   </main>
 
@@ -85,22 +86,22 @@
     let form = document.querySelector('form');
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      let output = document.querySelector('output');
+      let outputEl = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      outputEl.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
     });
-    window.onerror = function (message, source, lineno, colno, errorObj) {
+
+    window.onerror = function(message, source, lineno, colno, errorObj) {
       console.error(
-        ' Global handler caught:',
+        'Global handler caught:',
         message,
         'at',
         source + ':' + lineno + ':' + colno
       );
-      return true; 
+      return true;
     };
-
     class ValidationError extends Error {
       constructor(message) {
         super(message);
@@ -113,7 +114,7 @@
         task: 'console.log test',
         time: new Date().toLocaleTimeString(),
       };
-      console.log(' console.log output:', data);
+      console.log('console.log output:', data);
     });
     document.getElementById('console-error').addEventListener('click', () => {
       const errorObj = new Error('This is a simulated console.error');
@@ -123,27 +124,27 @@
       console.count('Count: Button clicked');
     });
     document.getElementById('console-warn').addEventListener('click', () => {
-      console.warn(' console.warn: This is a warning message');
+      console.warn('console.warn: This is a warning message');
     });
     document.getElementById('console-assert').addEventListener('click', () => {
-      const truthyValue = false; // Change to true to skip assertion
-      console.assert(truthyValue, ' console.assert: Assertion failed!');
+      const truthyValue = false;
+      console.assert(truthyValue, 'console.assert: Assertion failed!');
     });
     document.getElementById('console-clear').addEventListener('click', () => {
-      console.clear(); // Clears the DevTools console
-      console.log(' Console was just cleared.');
+      console.clear();
+      console.log('Console was just cleared.');
     });
 
     document.getElementById('console-dir').addEventListener('click', () => {
       const elem = document.getElementById('console-dir');
-      console.dir(elem); // Shows the element’s properties as an object
+      console.dir(elem);
     });
     document.getElementById('console-dirxml').addEventListener('click', () => {
       const elem = document.getElementById('console-dirxml');
-      console.dirxml(elem); // Shows the element’s HTML/XML representation
+      console.dirxml(elem);
     });
     document.getElementById('console-group-start').addEventListener('click', () => {
-      console.group(' Group: Sandwich Ingredients');
+      console.group('Group: Sandwich Ingredients');
       console.log('Bread');
       console.log('Lettuce');
       console.log('Tomato');
@@ -165,7 +166,7 @@
       console.time('LoopTimer');
       for (let i = 0; i < 1e6; i++) {
       }
-      console.log('Done “work”—now click "End Timer".');
+      console.log('Done work—now click "End Timer."');
     });
     document.getElementById('console-time-end').addEventListener('click', () => {
       console.timeEnd('LoopTimer');
@@ -183,15 +184,44 @@
       firstFunction();
     });
     document.getElementById('global-error').addEventListener('click', () => {
-      
       throw new Error('Global error');
     });
+    document.getElementById('try-catch-demo').addEventListener('click', () => {
+      try {
+        const missing = document.getElementById('nonExistent').innerText;
+        console.log('This never runs:', missing);
+      } catch (err) {
+        console.error('Caught in try/catch:', err.message);
+      } finally {
+        console.log('Finally block executed.');
+      }
+    });
+    document.getElementById('custom-error-demo').addEventListener('click', () => {
+      try {
+        const userInput = prompt('Enter a number less than 10:');
+        const num = Number(userInput);
+        if (isNaN(num)) {
+          throw new ValidationError('Input is not a number');
+        }
+        if (num >= 10) {
+          throw new ValidationError('Number must be less than 10');
+        }
+        console.log('Valid number entered:', num);
+      } catch (err) {
+        if (err instanceof ValidationError) {
+          console.error(`Custom ValidationError: ${err.message}`);
+        } else {
+          console.error('Unknown error:', err);
+        }
+      }
+    });
+  </script>
 
-    </script> or </body>:
-      <script>
-        window._trackJs = { token: "YOUR_TRACKJS_TOKEN_HERE" };
-      </script>
-      <script src="https://cdn.trackjs.com/releases/current/tracker.js"></script>
-
+  <script>
+    window._trackJs = {
+      token: "6be27897a8bf40a3bc6729f9928452ff"
+    };
+  </script>
+  <script src="https://cdn.trackjs.com/releases/current/tracker.js"></script>
 </body>
 </html>
