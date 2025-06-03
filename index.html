@@ -2,25 +2,22 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lab 9</title>
 
   <style>
     button {
       margin: 3px;
     }
-
     button:hover {
       cursor: pointer;
     }
-
     #first-num,
     #second-num {
       width: 60px;
     }
-
     output {
       border: 1px solid gray;
       display: block;
@@ -29,11 +26,9 @@
       padding: 5px;
       width: 240px;
     }
-
     main {
       width: 800px;
     }
-
     #error-btns {
       column-gap: 5px;
       display: flex;
@@ -41,8 +36,7 @@
       margin-top: 30px;
       row-gap: 5px;
     }
-
-    #error-btns>* {
+    #error-btns > * {
       padding: 8px 2px;
       width: 122px;
     }
@@ -69,27 +63,27 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id="console-log">Console Log</button>
+      <button id="console-error">Console Error</button>
+      <button id="console-count">Console Count</button>
+      <button id="console-warn">Console Warn</button>
+      <button id="console-assert">Console Assert</button>
+      <button id="console-clear">Console Clear</button>
+      <button id="console-dir">Console Dir</button>
+      <button id="console-dirxml">Console dirxml</button>
+      <button id="console-group-start">Console Group Start</button>
+      <button id="console-group-end">Console Group End</button>
+      <button id="console-table">Console Table</button>
+      <button id="console-time-start">Start Timer</button>
+      <button id="console-time-end">End Timer</button>
+      <button id="console-trace">Console Trace</button>
+      <button id="global-error">Trigger a Global Error</button>
     </section>
   </main>
 
   <script>
     let form = document.querySelector('form');
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
       let output = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
@@ -97,12 +91,107 @@
       let operator = document.querySelector('#operator').value;
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
     });
+    window.onerror = function (message, source, lineno, colno, errorObj) {
+      console.error(
+        ' Global handler caught:',
+        message,
+        'at',
+        source + ':' + lineno + ':' + colno
+      );
+      return true; 
+    };
 
-    let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
+    class ValidationError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = 'ValidationError';
+      }
+    }
+    document.getElementById('console-log').addEventListener('click', () => {
+      const data = {
+        name: 'Lab9_User',
+        task: 'console.log test',
+        time: new Date().toLocaleTimeString(),
+      };
+      console.log(' console.log output:', data);
+    });
+    document.getElementById('console-error').addEventListener('click', () => {
+      const errorObj = new Error('This is a simulated console.error');
+      console.error('console.error output:', errorObj);
+    });
+    document.getElementById('console-count').addEventListener('click', () => {
+      console.count('Count: Button clicked');
+    });
+    document.getElementById('console-warn').addEventListener('click', () => {
+      console.warn(' console.warn: This is a warning message');
+    });
+    document.getElementById('console-assert').addEventListener('click', () => {
+      const truthyValue = false; // Change to true to skip assertion
+      console.assert(truthyValue, ' console.assert: Assertion failed!');
+    });
+    document.getElementById('console-clear').addEventListener('click', () => {
+      console.clear(); // Clears the DevTools console
+      console.log(' Console was just cleared.');
+    });
 
-    // Start your code here
-    // You may move this JS to another file if you wish
-  </script>
+    document.getElementById('console-dir').addEventListener('click', () => {
+      const elem = document.getElementById('console-dir');
+      console.dir(elem); // Shows the element’s properties as an object
+    });
+    document.getElementById('console-dirxml').addEventListener('click', () => {
+      const elem = document.getElementById('console-dirxml');
+      console.dirxml(elem); // Shows the element’s HTML/XML representation
+    });
+    document.getElementById('console-group-start').addEventListener('click', () => {
+      console.group(' Group: Sandwich Ingredients');
+      console.log('Bread');
+      console.log('Lettuce');
+      console.log('Tomato');
+      console.log('Ham');
+    });
+    document.getElementById('console-group-end').addEventListener('click', () => {
+      console.groupEnd();
+      console.log('Ended the Sandwich Ingredients group.');
+    });
+    document.getElementById('console-table').addEventListener('click', () => {
+      const users = [
+        { id: 1, name: 'Alice', role: 'Developer' },
+        { id: 2, name: 'Bob', role: 'Tester' },
+        { id: 3, name: 'Carol', role: 'Designer' },
+      ];
+      console.table(users);
+    });
+    document.getElementById('console-time-start').addEventListener('click', () => {
+      console.time('LoopTimer');
+      for (let i = 0; i < 1e6; i++) {
+      }
+      console.log('Done “work”—now click "End Timer".');
+    });
+    document.getElementById('console-time-end').addEventListener('click', () => {
+      console.timeEnd('LoopTimer');
+    });
+    function firstFunction() {
+      secondFunction();
+    }
+    function secondFunction() {
+      thirdFunction();
+    }
+    function thirdFunction() {
+      console.trace('Here is the stack trace');
+    }
+    document.getElementById('console-trace').addEventListener('click', () => {
+      firstFunction();
+    });
+    document.getElementById('global-error').addEventListener('click', () => {
+      
+      throw new Error('Global error');
+    });
+
+    </script> or </body>:
+      <script>
+        window._trackJs = { token: "YOUR_TRACKJS_TOKEN_HERE" };
+      </script>
+      <script src="https://cdn.trackjs.com/releases/current/tracker.js"></script>
+
 </body>
-
 </html>
